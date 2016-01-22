@@ -1,0 +1,20 @@
+sudo: false
+language: scala
+install:
+  - git clone https://github.com/scala-js/scala-js.git
+  - cd scala-js
+  - sbt ++$TRAVIS_SCALA_VERSION compiler/publishLocal library/publishLocal javalibEx/publishLocal testInterface/publishLocal stubs/publishLocal jasmineTestFramework/publishLocal jUnitRuntime/publishLocal jUnitPlugin/publishLocal
+  - sbt ++2.10.6 ir/publishLocal tools/publishLocal jsEnvs/publishLocal testAdapter/publishLocal sbtPlugin/publishLocal
+  - cd ..
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION root/scalastyle testSuiteJVM/scalastyle testSuiteJVM/test:scalastyle testSuite/scalastyle testSuite/test:scalastyle
+  - sbt ++$TRAVIS_SCALA_VERSION testSuiteJVM/test
+  - sbt ++$TRAVIS_SCALA_VERSION testSuite/test
+  - sbt ++$TRAVIS_SCALA_VERSION 'set scalaJSUseRhino in Global := false' testSuite/test
+  - sbt ++$TRAVIS_SCALA_VERSION 'set scalaJSStage in Global := FullOptStage' testSuite/test
+scala:
+  - 2.10.6
+  - 2.11.7
+  - 2.12.0-M3
+jdk:
+  - oraclejdk8
