@@ -32,14 +32,6 @@ final class Year private (year: Int)
     case _    => unit.isSupportedBy(this)
   }
 
-  override def range(field: TemporalField): ValueRange = field match {
-    case YEAR_OF_ERA =>
-      if (year <= 0) ValueRange.of(1, MAX_VALUE + 1)
-      else ValueRange.of(1, MAX_VALUE)
-
-    case _ => super.range(field)
-  }
-
   override def get(field: TemporalField): Int = field match {
     case YEAR_OF_ERA => if (year < 1) 1 - year else year
     case YEAR        => year
@@ -117,10 +109,11 @@ final class Year private (year: Int)
     }
   }
 
-  override def minus(amount: Long, unit: TemporalUnit): Year = {
-    if (amount != Long.MinValue) plus(-amount, unit)
-    else plus(Long.MaxValue, unit).plus(1, unit)
-  }
+  override def minus(amount: TemporalAmount): Year =
+    super.minus(amount).asInstanceOf[Year]
+
+  override def minus(amount: Long, unit: TemporalUnit): Year =
+    super.minus(amount, unit).asInstanceOf[Year]
 
   def minusYears(amount: Long): Year = minus(amount, YEARS)
 
@@ -154,11 +147,9 @@ final class Year private (year: Int)
   def atDay(dayOfYear: Int): LocalDate =
     LocalDate.ofYearDay(year, dayOfYear)
 
-  // TODO
-  // def atMonth(month: Month): YearMonth = YearMonth.of(year, month)
+  def atMonth(month: Month): YearMonth = YearMonth.of(year, month)
 
-  // TODO
-  // def atMonth(month: Int): YearMonth = YearMonth.of(year, month)
+  def atMonth(month: Int): YearMonth = YearMonth.of(year, month)
 
   def atMonthDay(monthDay: MonthDay): LocalDate = monthDay.atYear(year)
 
