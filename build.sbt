@@ -22,6 +22,11 @@ lazy val root: Project = project.in(file(".")).
   settings(
     name := "scalajs-java-time",
 
+    mappings in (Compile, packageBin) ~= {
+      _.filter(!_._2.endsWith(".class"))
+    },
+    exportJars := true,
+
     publishMavenStyle := true,
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
