@@ -7,7 +7,7 @@ import java.time.temporal._
 import java.{util => ju}
 
 final class Period private (years: Int, months: Int, days: Int)
-    extends ChronoPeriod with Serializable {
+    extends ChronoPeriod with TemporalAmount with Serializable {
   import ChronoUnit._
 
   def get(unit: TemporalUnit): Long = unit match {
