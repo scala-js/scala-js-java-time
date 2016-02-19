@@ -27,6 +27,15 @@ lazy val myCross = crossProject.
 **Requirement**: you must use a host JDK8 to *build* your project, i.e., to
 launch sbt. `scalajs-java-time` does not work on earlier JDKs.
 
+## Work in Progress / linking errors
+
+This library is a work in progress.
+There are still many classes and methods that have not been implemented yet.
+If you use any of those, you will get linking errors.
+
+Feel free to [contribute](./CONTRIBUTING.md) to extend the set of supported
+classes and methods!
+
 ## License
 
 `scalajs-java-time` is distributed under the
