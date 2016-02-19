@@ -27,6 +27,8 @@ lazy val myCross = crossProject.
 **Requirement**: you must use a host JDK8 to *build* your project, i.e., to
 launch sbt. `scalajs-java-time` does not work on earlier JDKs.
 
+**Note:**: the `parse` methods that appear in the JVM (Java 8) versions of the following classes have not yet been implemented in this library: `Period, LocalDate, MonthDay, Duration, LocalTime, Year and YearMonth` If you attempt to use one (in a custom uPickle pickler for example) you will get a linking error when transpiling to JavaScript due to the attempt to call a non-existent method.    
+
 ## License
 
 `scalajs-java-time` is distributed under the
