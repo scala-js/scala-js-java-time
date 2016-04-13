@@ -4,7 +4,7 @@ import org.scalajs.sbtplugin.cross.CrossProject
 val commonSettings: Seq[Setting[_]] = Seq(
   version := "0.1.1-SNAPSHOT",
   organization := "org.scala-js",
-  scalaVersion := "2.11.7",
+  scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
 
   homepage := Some(url("http://scala-js.org/")),
