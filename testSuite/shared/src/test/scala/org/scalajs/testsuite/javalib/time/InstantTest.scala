@@ -373,6 +373,10 @@ class InstantTest extends TemporalTest[Instant] {
   @Test def toStringOutput(): Unit = {
     assertEquals("1970-01-01T00:00:00Z", Instant.EPOCH.toString)
     assertEquals("-1000000000-01-01T00:00:00Z", Instant.MIN.toString)
+
+    // https://github.com/scala-js/scala-js-java-time/issues/23
+    assertEquals("1970-01-01T00:10:00.100Z", Instant.EPOCH.plus(10, MINUTES).plusMillis(100).toString)
+
     assertEquals("+1000000000-12-31T23:59:59.999999999Z", Instant.MAX.toString)
     assertEquals("1999-06-03T06:56:23.942Z", somePositiveInstant.toString)
     assertEquals("-0687-08-07T23:38:33.088936253Z", someNegativeInstant.toString)
