@@ -271,7 +271,7 @@ final class Instant private (private val seconds: Long, private val nanos: Int)
 
     val timePart = {
       val timeStr = time.toString
-      if (time.getSecond == 0) timeStr + ":00"
+      if (time.getSecond == 0 && time.getNano == 0) timeStr + ":00"
       else timeStr
     }
 
