@@ -266,6 +266,9 @@ final class LocalDate private (year: Int, month: Month, dayOfMonth: Int)
   // Implemented by ChronoLocalDate
   // def adjustInto(temporal: Temporal): Temporal
 
+  def daysUntil(end: LocalDate): Long =
+    end.toEpochDay - toEpochDay
+
   def until(end: Temporal, unit: TemporalUnit): Long = {
     import scala.math.Ordering.Implicits._
 

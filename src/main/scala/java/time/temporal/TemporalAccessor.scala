@@ -30,6 +30,13 @@ trait TemporalAccessor {
 
   def getLong(field: TemporalField): Long
 
-  // Not implemented
-  // def query[R](query: TemporalQuery[R]): R
+  def query[R](query: TemporalQuery[R]): R = {
+    if (query == TemporalQueries.zoneId()
+      || query == TemporalQueries.chronology()
+      || query == TemporalQueries.precision()) {
+      null.asInstanceOf[R]
+    } else {
+      query.queryFrom(this)
+    }
+  }
 }
