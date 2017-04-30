@@ -2,7 +2,7 @@ import sbt.Keys._
 import org.scalajs.sbtplugin.cross.CrossProject
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  version := "0.2.1-SNAPSHOT",
+  version := "0.2.1",
   organization := "org.scala-js",
   scalaVersion := "2.11.8",
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
