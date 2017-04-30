@@ -23,7 +23,7 @@ class PeriodTest extends TemporalAmountTest {
   val samples1 = Seq(ZERO, oneYear, oneYear.negated,
       oneMonth, oneMonth.negated, oneDay, oneDay.negated)
 
-  val samples = samples1 ++ Seq(pmin, pmin1, pmax)
+  val samples: Seq[Period] = samples1 ++ Seq(pmin, pmin1, pmax)
 
   val units = Seq(YEARS, MONTHS, DAYS)
 
