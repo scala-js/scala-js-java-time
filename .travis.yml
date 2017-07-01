@@ -4,8 +4,7 @@ script:
   - sbt ++$TRAVIS_SCALA_VERSION root/scalastyle testSuiteJVM/scalastyle testSuiteJVM/test:scalastyle testSuite/scalastyle testSuite/test:scalastyle
   - sbt ++$TRAVIS_SCALA_VERSION testSuiteJVM/test
   - sbt ++$TRAVIS_SCALA_VERSION testSuite/test
-  - sbt ++$TRAVIS_SCALA_VERSION 'set scalaJSUseRhino in Global := false' testSuite/test
-  - sbt ++$TRAVIS_SCALA_VERSION 'set scalaJSUseRhino in Global := false' 'set scalaJSStage in Global := FullOptStage' testSuite/test
+  - sbt ++$TRAVIS_SCALA_VERSION 'set scalaJSStage in Global := FullOptStage' testSuite/test
   - sbt ++$TRAVIS_SCALA_VERSION publishLocal
 scala:
   - 2.10.6
