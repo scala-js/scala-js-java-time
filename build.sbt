@@ -1,6 +1,3 @@
-import sbt.Keys._
-import org.scalajs.sbtplugin.cross.CrossProject
-
 crossScalaVersions in ThisBuild := Seq("2.11.11", "2.10.6", "2.12.2", "2.13.0-M1")
 scalaVersion in ThisBuild := (crossScalaVersions in ThisBuild).value.head
 
@@ -59,12 +56,7 @@ lazy val root: Project = project.in(file(".")).
     pomIncludeRepository := { _ => false }
   )
 
-lazy val testSuite = CrossProject(
-  jvmId = "testSuiteJVM",
-  jsId = "testSuite",
-  base = file("testSuite"),
-  crossType = CrossType.Full
-).
+lazy val testSuite = crossProject.
   jsConfigure(_ .enablePlugins(ScalaJSJUnitPlugin)).
   settings(commonSettings: _*).
   settings(
