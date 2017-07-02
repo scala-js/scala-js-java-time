@@ -1,7 +1,7 @@
 # scalajs-java-time
 
 [![Build Status](https://travis-ci.org/scala-js/scala-js-java-time.svg?branch=master)](https://travis-ci.org/scala-js/scala-js-java-time)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.15.svg)](https://www.scala-js.org/)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org/)
 
 `scalajs-java-time` is a BSD-licensed reimplementation of the `java.time` API
 of JDK8 for Scala.js. It enables this API in Scala.js projects.
@@ -11,7 +11,7 @@ of JDK8 for Scala.js. It enables this API in Scala.js projects.
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.1"
+libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.2"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -20,7 +20,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   jsSettings.(
-    libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.1"
+    libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.2"
   )
 ```
 
