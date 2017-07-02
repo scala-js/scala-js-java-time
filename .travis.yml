@@ -1,11 +1,10 @@
 sudo: false
 language: scala
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION root/scalastyle testSuiteJVM/scalastyle testSuiteJVM/test:scalastyle testSuite/scalastyle testSuite/test:scalastyle
+  - sbt ++$TRAVIS_SCALA_VERSION root/scalastyle testSuiteJVM/scalastyle testSuiteJVM/test:scalastyle testSuiteJS/scalastyle testSuiteJS/test:scalastyle
   - sbt ++$TRAVIS_SCALA_VERSION testSuiteJVM/test
-  - sbt ++$TRAVIS_SCALA_VERSION testSuite/test
-  - sbt ++$TRAVIS_SCALA_VERSION 'set scalaJSUseRhino in Global := false' testSuite/test
-  - sbt ++$TRAVIS_SCALA_VERSION 'set scalaJSUseRhino in Global := false' 'set scalaJSStage in Global := FullOptStage' testSuite/test
+  - sbt ++$TRAVIS_SCALA_VERSION testSuiteJS/test
+  - sbt ++$TRAVIS_SCALA_VERSION 'set scalaJSStage in Global := FullOptStage' testSuiteJS/test
   - sbt ++$TRAVIS_SCALA_VERSION publishLocal
 scala:
   - 2.10.6
@@ -14,3 +13,6 @@ scala:
   - 2.13.0-M1
 jdk:
   - oraclejdk8
+env:
+  - SCALAJS_VERSION=0.6.18
+  - SCALAJS_VERSION=1.0.0-M1
