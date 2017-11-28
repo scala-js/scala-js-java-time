@@ -11,7 +11,7 @@ of JDK8 for Scala.js. It enables this API in Scala.js projects.
 Simply add the following line to your sbt settings:
 
 ```scala
-libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.2"
+libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.3"
 ```
 
 If you have a `crossProject`, the setting must be used only in the JS part:
@@ -20,7 +20,7 @@ If you have a `crossProject`, the setting must be used only in the JS part:
 lazy val myCross = crossProject.
   ...
   jsSettings.(
-    libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.2"
+    libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.3"
   )
 ```
 
