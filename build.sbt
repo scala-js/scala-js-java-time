@@ -1,4 +1,4 @@
-crossScalaVersions in ThisBuild := Seq("2.11.11", "2.10.6", "2.12.2", "2.13.0-M1")
+crossScalaVersions in ThisBuild := Seq("2.12.4", "2.11.12", "2.10.7", "2.13.0-M2")
 scalaVersion in ThisBuild := (crossScalaVersions in ThisBuild).value.head
 
 val commonSettings: Seq[Setting[_]] = Seq(
@@ -61,7 +61,8 @@ lazy val testSuite = crossProject.
   settings(commonSettings: _*).
   settings(
     testOptions +=
-      Tests.Argument(TestFramework("com.novocode.junit.JUnitFramework"), "-v", "-a")
+      Tests.Argument(TestFramework("com.novocode.junit.JUnitFramework"), "-v", "-a"),
+    scalacOptions += "-target:jvm-1.8"
   ).
   jsSettings(
     name := "java.time testSuite on JS"
