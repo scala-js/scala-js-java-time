@@ -17,9 +17,9 @@ libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.3"
 If you have a `crossProject`, the setting must be used only in the JS part:
 
 ```scala
-lazy val myCross = crossProject.
+lazy val myCross = crossProject
   ...
-  jsSettings.(
+  .jsSettings(
     libraryDependencies += "org.scala-js" %%% "scalajs-java-time" % "0.2.3"
   )
 ```
