@@ -2,8 +2,11 @@ package java.time
 
 import scala.scalajs.js
 
-import java.time.chrono.{IsoEra, Era, IsoChronology, ChronoLocalDate}
+import java.time.chrono._
+import java.time.format.DateTimeParseException
 import java.time.temporal._
+
+import scala.util.control.NonFatal
 
 final class LocalDate private (year: Int, month: Month, dayOfMonth: Int)
     extends ChronoLocalDate with Serializable {
@@ -99,7 +102,7 @@ final class LocalDate private (year: Int, month: Month, dayOfMonth: Int)
 
   def lengthOfMonth(): Int = month.length(_isLeapYear)
 
-  def lengthOfYear(): Int = if (_isLeapYear) 366 else 365
+  override def lengthOfYear(): Int = if (_isLeapYear) 366 else 365
 
   override def `with`(adjuster: TemporalAdjuster): LocalDate =
     adjuster.adjustInto(this).asInstanceOf[LocalDate]
@@ -372,7 +375,7 @@ final class LocalDate private (year: Int, month: Month, dayOfMonth: Int)
 }
 
 object LocalDate {
-  import Preconditions.requireDateTime
+  import Preconditions._
 
   private final val iso = IsoChronology.INSTANCE
 
@@ -431,8 +434,37 @@ object LocalDate {
       ofEpochDay(temporal.getLong(ChronoField.EPOCH_DAY))
   }
 
-  // TODO
-  // def parse(text: CharSequence): LocalDate
+  private def parseSegment(segment: String, classifier: String): Int = {
+    try {
+      segment.toInt
+    } catch {
+      case _: NumberFormatException =>
+        throw new DateTimeParseException(s"$segment is not a valid $classifier",
+            segment, 0)
+    }
+  }
+
+  def parse(text: CharSequence): LocalDate = {
+    try {
+      val pattern = """(^[-+]?)(\d*)-(\d*)-(\d*)""".r
+      val pattern(sign, yearSegment, monthSegment, daySegment) = text
+
+      val year = parseSegment(sign + yearSegment, "year")
+      val month = parseSegment(monthSegment, "month")
+      val day = parseSegment(daySegment, "day")
+
+      requireDateTimeParse(!((sign != "+") && (year > 9999)),
+          s"year > 9999 must be preceded by [+]", text, 0)
+
+      LocalDate.of(year.toInt, month.toInt, day.toInt)
+    } catch {
+      case err: DateTimeParseException =>
+        throw err
+      case NonFatal(err) =>
+        throw new DateTimeParseException(s"Invalid date $text", text, 0)
+    }
+  }
+
   // def parse(text: CharSequence,
   //     formatter: java.time.format.DateTimeFormatter): LocalDate
 }

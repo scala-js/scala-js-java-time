@@ -46,4 +46,8 @@ private[time] object Constants {
   final val SECONDS_IN_WEEK = SECONDS_IN_DAY * 7
 
   final val SECONDS_IN_MONTH = 2629746
+
+  final val DAYS_IN_LEAP_YEAR = 366
+
+  final val DAYS_IN_YEAR = 365
 }
