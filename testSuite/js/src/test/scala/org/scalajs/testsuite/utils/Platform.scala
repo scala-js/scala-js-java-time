@@ -7,7 +7,7 @@
 \*                                                                      */
 package org.scalajs.testsuite.utils
 
-import scala.scalajs.runtime
+import scala.scalajs.js
 
 object Platform {
   /** Returns `true` if and only if the code is executing on a JVM.
@@ -23,5 +23,5 @@ object Platform {
   // (i.e. do no link on the JVM).
 
   def areTypedArraysSupported: Boolean =
-    runtime.Bits.areTypedArraysSupported
+    js.typeOf(js.constructorOf[js.typedarray.ArrayBuffer]) != "undefined"
 }
