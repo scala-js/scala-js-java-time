@@ -1,6 +1,7 @@
 package org.scalajs.testsuite.javalib.time
 
 import java.time._
+import java.time.format.DateTimeParseException
 import java.time.temporal.{UnsupportedTemporalTypeException, ChronoUnit, ChronoField}
 
 import org.junit.Test
@@ -373,11 +374,14 @@ class InstantTest extends TemporalTest[Instant] {
   @Test def toStringOutput(): Unit = {
     assertEquals("1970-01-01T00:00:00Z", Instant.EPOCH.toString)
     assertEquals("-1000000000-01-01T00:00:00Z", Instant.MIN.toString)
+    assertEquals("-999999999-01-01T00:00:00Z", Instant.MIN.plus(366, DAYS).toString)
 
     // https://github.com/scala-js/scala-js-java-time/issues/23
     assertEquals("1970-01-01T00:10:00.100Z", Instant.EPOCH.plus(10, MINUTES).plusMillis(100).toString)
 
     assertEquals("+1000000000-12-31T23:59:59.999999999Z", Instant.MAX.toString)
+    assertEquals("+999999999-12-31T23:59:59.999999999Z", Instant.MAX.minus(366, DAYS).toString)
+
     assertEquals("1999-06-03T06:56:23.942Z", somePositiveInstant.toString)
     assertEquals("-0687-08-07T23:38:33.088936253Z", someNegativeInstant.toString)
   }
@@ -422,6 +426,33 @@ class InstantTest extends TemporalTest[Instant] {
 
     val aYear = Year.of(329)
     expectThrows(classOf[DateTimeException], Instant.from(aYear))
+  }
+
+  @Test def parse(): Unit = {
+    assertEquals(Instant.EPOCH, Instant.parse("1970-01-01T00:00:00Z"))
+    assertEquals(Instant.MIN, Instant.parse("-1000000000-01-01T00:00:00Z"))
+    assertEquals(Instant.MIN.plus(366, DAYS), Instant.parse("-999999999-01-01T00:00:00Z"))
+
+    // https://github.com/scala-js/scala-js-java-time/issues/23
+    assertEquals(Instant.EPOCH.plus(10, MINUTES).plusMillis(100), Instant.parse("1970-01-01T00:10:00.100Z"))
+
+    assertEquals(Instant.MAX, Instant.parse("+1000000000-12-31T23:59:59.999999999Z"))
+    assertEquals(Instant.MAX.minus(366, DAYS), Instant.parse("+999999999-12-31T23:59:59.999999999Z"))
+
+    assertEquals(somePositiveInstant, Instant.parse("1999-06-03T06:56:23.942Z"))
+    assertEquals(someNegativeInstant, Instant.parse("-0687-08-07T23:38:33.088936253Z"))
+
+    val charSequence: CharSequence = "1999-06-03T06:56:23.942Z".toCharArray
+    assertEquals(somePositiveInstant, Instant.parse(charSequence))
+
+    expectThrows(classOf[DateTimeParseException], Instant.parse("+1000000001-12-31T23:59:59.999999999Z"))
+    expectThrows(classOf[DateTimeParseException], Instant.parse("-0687-99-07T23:38:33.088936253Z"))
+    expectThrows(classOf[DateTimeParseException], Instant.parse("-ABCD-08-07T23:38:33.088936253Z"))
+    expectThrows(classOf[DateTimeParseException], Instant.parse("1999-06-03T13:56:90.942Z"))
+    expectThrows(classOf[DateTimeParseException], Instant.parse("1999-06-03T13:65:23.942Z"))
+    expectThrows(classOf[DateTimeParseException], Instant.parse("1999-06-03T25:56:23.942Z"))
+    expectThrows(classOf[DateTimeParseException], Instant.parse("1999-06-99T13:56:23.942Z"))
+    expectThrows(classOf[DateTimeParseException], Instant.parse("1999-99-03T13:56:23.942Z"))
   }
 
 }

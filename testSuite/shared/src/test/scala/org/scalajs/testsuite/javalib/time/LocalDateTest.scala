@@ -2,6 +2,7 @@ package org.scalajs.testsuite.javalib.time
 
 import java.time._
 import java.time.chrono.{IsoEra, IsoChronology}
+import java.time.format.DateTimeParseException
 import java.time.temporal._
 
 import org.junit.Test
@@ -811,5 +812,23 @@ class LocalDateTest extends TemporalTest[LocalDate] {
 
     for (t <- Seq(LocalTime.MIN, LocalTime.NOON, LocalTime.MAX))
       expectThrows(classOf[DateTimeException], from(t))
+  }
+
+  @Test def test_parse(): Unit = {
+    assertEquals(parse("-999999999-01-01"), MIN)
+    assertEquals(parse("-0001-12-31"), of(-1, 12, 31))
+    assertEquals(parse("0000-01-01"), of(0, 1, 1))
+    assertEquals(parse("2011-02-28"), someDate)
+    assertEquals(parse("2012-02-29"), leapDate)
+    assertEquals(parse("9999-12-31"), of(9999, 12, 31))
+    assertEquals(parse("+10000-01-01"), of(10000, 1, 1))
+    assertEquals(parse("+999999999-12-31"), MAX)
+
+    expectThrows(classOf[DateTimeParseException], parse("0000-01-99"))
+    expectThrows(classOf[DateTimeParseException], parse("0000-01-900"))
+    expectThrows(classOf[DateTimeParseException], parse("aaaa-01-30"))
+    expectThrows(classOf[DateTimeParseException], parse("2012-13-30"))
+    expectThrows(classOf[DateTimeParseException], parse("2012-01-34"))
+    expectThrows(classOf[DateTimeParseException], parse("2005-02-29"))
   }
 }

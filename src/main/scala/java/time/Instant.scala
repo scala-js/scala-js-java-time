@@ -2,7 +2,12 @@ package java.time
 
 import scala.scalajs.js
 
+import java.time.Preconditions.requireDateTimeParse
+import java.time.chrono.IsoChronology
+import java.time.format.DateTimeParseException
 import java.time.temporal._
+
+import scala.util.control.NonFatal
 
 /** Created by alonsodomin on 26/12/2015. */
 final class Instant private (private val seconds: Long, private val nanos: Int)
@@ -239,16 +244,14 @@ final class Instant private (private val seconds: Long, private val nanos: Int)
   override def hashCode(): Int = (seconds + 51 * nanos).hashCode
 
   override def toString: String = {
-    def tenThousandPartsBasedOnZero: (Long, Long) = {
+    def tenThousandPartsAndRemainder: (Long, Long) = {
       if (seconds < -secondsFromZeroToEpoch) {
-        val zeroSecs = seconds + secondsFromZeroToEpoch
-        val quot = zeroSecs / secondsInTenThousandYears
-        val rem = zeroSecs % secondsInTenThousandYears
+        val quot = seconds / secondsInTenThousandYears
+        val rem = seconds % secondsInTenThousandYears
         (quot, rem)
       } else {
-        val zeroSecs = seconds - secondsInTenThousandYears + secondsFromZeroToEpoch
-        val quot = Math.floorDiv(zeroSecs, secondsInTenThousandYears) + 1
-        val rem = Math.floorMod(zeroSecs, secondsInTenThousandYears)
+        val quot = Math.floorDiv(seconds, secondsInTenThousandYears)
+        val rem = Math.floorMod(seconds, secondsInTenThousandYears)
         (quot, rem)
       }
     }
@@ -259,15 +262,20 @@ final class Instant private (private val seconds: Long, private val nanos: Int)
       (LocalDate.ofEpochDay(epochDay), LocalTime.ofSecondOfDay(secondsOfDay).withNano(nanos))
     }
 
-    val (hi, lo) = tenThousandPartsBasedOnZero
-    val epochSecond = lo - secondsFromZeroToEpoch
+    val (hi, lo) = tenThousandPartsAndRemainder
+    val epochSecond = lo
     val (date, time) = dateTime(epochSecond)
 
-    val hiPart = {
-      if (hi > 0) s"+$hi"
-      else if (hi < 0) hi.toString
-      else ""
+    val years = hi * 10000 + date.getYear
+
+    val yearSegment = {
+      if (years > 9999) s"+$years"
+      else if (years < 0 && years > -1000) "-%04d".format(Math.abs(years))
+      else years.toString
     }
+
+    val monthSegement = "%02d".format(date.getMonthValue)
+    val daySegment = "%02d".format(date.getDayOfMonth)
 
     val timePart = {
       val timeStr = time.toString
@@ -275,7 +283,8 @@ final class Instant private (private val seconds: Long, private val nanos: Int)
       else timeStr
     }
 
-    s"${hiPart}${date}T${timePart}Z"
+    val dateSegment = s"$yearSegment-$monthSegement-$daySegment"
+    s"${dateSegment}T${timePart}Z"
   }
 
   // Not implemented
@@ -287,11 +296,16 @@ object Instant {
   import Constants._
   import ChronoField._
 
+  private final val iso = IsoChronology.INSTANCE
+
   final val EPOCH = new Instant(0, 0)
 
   private val MinSecond = -31557014167219200L
   private val MaxSecond = 31556889864403199L
   private val MaxNanosInSecond = 999999999
+
+  private val MaxYear = 1000000000
+  private val MinYear = -1000000000
 
   /*
    * 146097 days in 400 years
@@ -335,7 +349,90 @@ object Instant {
       ofEpochSecond(temporal.getLong(INSTANT_SECONDS), temporal.getLong(NANO_OF_SECOND))
   }
 
-  // Not implemented
-  // def parse(text: CharSequence): Instant
+  private def parseSegment(segment: String, classifier: String): Int = {
+    try {
+      segment.toInt
+    } catch {
+      case _: NumberFormatException =>
+        throw new DateTimeParseException(s"$segment is not a valid $classifier",
+            segment, 0)
+    }
+  }
 
+  private def toEpochDay(year: Int, month: Int, day: Int): Long = {
+    val leapYear = iso.isLeapYear(year)
+
+    val extremeLeapYear = 999999996
+    val epochDaysToAccountForExtreme = (3 * DAYS_IN_YEAR) + DAYS_IN_LEAP_YEAR
+
+    requireDateTimeParse(year <= MaxYear || year >= MinYear,
+        s"$year out of bounds, year > 1000000000 || year < -1000000000",
+        year.toString, 0)
+
+    val monthDay = MonthDay.of(month, day)
+    if (monthDay.getMonth == Month.FEBRUARY && leapYear) {
+      requireDateTimeParse(monthDay.getDayOfMonth <= 29,
+          "Day range out of bounds <= 29 for leap years", day.toString, 0)
+    }
+
+    if (year == MaxYear)
+      LocalDate.of(extremeLeapYear, month, day).toEpochDay + epochDaysToAccountForExtreme
+    else if (year == MinYear)
+      LocalDate.of(-extremeLeapYear, month, day).toEpochDay - epochDaysToAccountForExtreme
+    else
+      LocalDate.of(year, month, day).toEpochDay
+  }
+
+  def parse(text: CharSequence): Instant = {
+    try {
+      val pattern = """(^[-+]?)(\d*)-(\d*)-(\d*)T(\d*):(\d*):(\d*).?(\d*)Z""".r
+      val pattern(sign, yearSegment, monthSegment, daySegment,
+          hourSegment, minutesSegment, secondsSegment, nanosecondsSegment) = text
+
+      val year = parseSegment(sign + yearSegment, "year")
+      val month = parseSegment(monthSegment, "month")
+      val day = parseSegment(daySegment, "day")
+      val nanoPower = 9
+
+      requireDateTimeParse(!((sign != "+") && (year > 9999)),
+          s"year > 9999 must be preceded by [+]", text, 0)
+
+      val days = toEpochDay(year, month, day)
+      val dayOffset = days
+
+      val hourOffset = parseSegment(hourSegment, "hour")
+      val minuteOffset = parseSegment(minutesSegment, "minutes")
+      val secondsOffset = parseSegment(secondsSegment, "seconds")
+
+      requireDateTimeParse(hourOffset <= HOURS_IN_DAY,
+          s"hours are > $HOURS_IN_DAY", text, 0)
+
+      requireDateTimeParse(minuteOffset <= MINUTES_IN_HOUR,
+          s"minutes are > $MINUTES_IN_HOUR", text, 0)
+
+      requireDateTimeParse(secondsOffset <= SECONDS_IN_MINUTE,
+          s"seconds are > $SECONDS_IN_MINUTE", text, 0)
+
+      val nanos = if (nanosecondsSegment != "") {
+        val scale = Math.pow(10, nanoPower - nanosecondsSegment.length).toInt
+        parseSegment(nanosecondsSegment, "nanoseconds") * scale
+      } else {
+        0
+      }
+
+      val epochSecondsOffset = {
+        dayOffset * SECONDS_IN_DAY +
+        hourOffset * SECONDS_IN_HOUR +
+        minuteOffset * SECONDS_IN_MINUTE +
+        secondsOffset
+      }
+
+      new Instant(epochSecondsOffset, nanos)
+    } catch {
+      case err: DateTimeParseException =>
+        throw err
+      case NonFatal(err) =>
+        throw new DateTimeParseException(s"Invalid date $text", text, 0)
+    }
+  }
 }
