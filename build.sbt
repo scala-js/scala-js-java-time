@@ -1,6 +1,6 @@
 import sbtcrossproject.crossProject
 
-crossScalaVersions in ThisBuild := Seq("2.12.4", "2.11.12", "2.10.7", "2.13.0-M2")
+crossScalaVersions in ThisBuild := Seq("2.12.5", "2.11.12", "2.10.7", "2.13.0-M3")
 scalaVersion in ThisBuild := (crossScalaVersions in ThisBuild).value.head
 
 val commonSettings: Seq[Setting[_]] = Seq(
