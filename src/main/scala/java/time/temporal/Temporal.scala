@@ -1,6 +1,7 @@
 package java.time.temporal
 
 trait Temporal extends TemporalAccessor {
+
   def isSupported(unit: TemporalUnit): Boolean
 
   def `with`(adjuster: TemporalAdjuster): Temporal = adjuster.adjustInto(this)
