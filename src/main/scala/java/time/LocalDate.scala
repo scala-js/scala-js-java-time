@@ -379,7 +379,7 @@ object LocalDate {
 
   private final val iso = IsoChronology.INSTANCE
 
-  private val daysBeforeYears = Stream.iterate(1970 -> 0) { case (year, day) =>
+  private val daysBeforeYears = Iterator.iterate(1970 -> 0) { case (year, day) =>
     if (iso.isLeapYear(year)) (year + 1) -> (day + 366)
     else (year + 1) -> (day + 365)
   }.take(400).toVector
