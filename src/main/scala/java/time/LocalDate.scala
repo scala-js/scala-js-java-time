@@ -391,7 +391,7 @@ object LocalDate {
 
   def now(): LocalDate = {
     val d = new js.Date()
-    of(d.getFullYear, d.getMonth + 1, d.getDate)
+    of(d.getFullYear.toInt, d.getMonth.toInt + 1, d.getDate.toInt)
   }
 
   // Not implemented

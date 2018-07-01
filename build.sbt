@@ -1,6 +1,14 @@
 import sbtcrossproject.crossProject
 
-crossScalaVersions in ThisBuild := Seq("2.12.5", "2.11.12", "2.10.7", "2.13.0-M3", "2.13.0-M4")
+crossScalaVersions in ThisBuild := {
+  val allVersions = Seq("2.12.6", "2.11.12", "2.10.7", "2.13.0-M3", "2.13.0-M4")
+  if (scalaJSVersion.startsWith("0.6."))
+    allVersions
+  else if (scalaJSVersion == "1.0.0-M3")
+    allVersions.filter(v => !v.startsWith("2.10.") && v != "2.13.0-M4")
+  else
+    allVersions.filter(!_.startsWith("2.10."))
+}
 scalaVersion in ThisBuild := (crossScalaVersions in ThisBuild).value.head
 
 val commonSettings: Seq[Setting[_]] = Seq(

@@ -323,8 +323,9 @@ object LocalTime {
 
   def now(): LocalTime = {
     val date = new js.Date()
-    val nano = date.getMilliseconds * 1000000
-    new LocalTime(date.getHours, date.getMinutes, date.getSeconds, nano)
+    val nano = date.getMilliseconds.toInt * 1000000
+    new LocalTime(date.getHours.toInt, date.getMinutes.toInt,
+        date.getSeconds.toInt, nano)
   }
 
   // Not implemented

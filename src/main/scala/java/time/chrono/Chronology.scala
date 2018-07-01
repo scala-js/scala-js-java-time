@@ -26,7 +26,7 @@ trait Chronology extends Comparable[Chronology] {
 
   def dateNow(): ChronoLocalDate = {
     val d = new js.Date()
-    date(d.getFullYear, d.getMonth, d.getDate)
+    date(d.getFullYear.toInt, d.getMonth.toInt, d.getDate.toInt)
   }
 
   // Not implemented
