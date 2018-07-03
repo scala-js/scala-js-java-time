@@ -12,7 +12,7 @@ crossScalaVersions in ThisBuild := {
 scalaVersion in ThisBuild := (crossScalaVersions in ThisBuild).value.head
 
 val commonSettings: Seq[Setting[_]] = Seq(
-  version := "0.2.5-SNAPSHOT",
+  version := "0.2.5",
   organization := "org.scala-js",
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
 
