@@ -1,9 +1,8 @@
 package java.time
 
-import scala.collection.JavaConverters._
-
 import java.time.chrono.{IsoChronology, ChronoPeriod}
 import java.time.temporal._
+
 import java.{util => ju}
 
 final class Period private (years: Int, months: Int, days: Int)
@@ -20,7 +19,7 @@ final class Period private (years: Int, months: Int, days: Int)
   }
 
   def getUnits(): ju.List[TemporalUnit] =
-    Seq[TemporalUnit](YEARS, MONTHS, DAYS).asJava
+    ju.Collections.unmodifiableList(ju.Arrays.asList(YEARS, MONTHS, DAYS))
 
   def getChronology(): IsoChronology = IsoChronology.INSTANCE
 
@@ -170,21 +169,25 @@ object Period {
     case amount: Period => amount
 
     case _ =>
-      amount.getUnits().asScala.foldLeft(ZERO) { (p, unit) =>
+      var result = ZERO
+      val iter = amount.getUnits().iterator()
+      while (iter.hasNext()) {
+        val unit = iter.next()
         unit match {
           case ChronoUnit.YEARS =>
-            p.withYears(Math.toIntExact(amount.get(unit)))
+            result = result.withYears(Math.toIntExact(amount.get(unit)))
 
           case ChronoUnit.MONTHS =>
-            p.withMonths(Math.toIntExact(amount.get(unit)))
+            result = result.withMonths(Math.toIntExact(amount.get(unit)))
 
           case ChronoUnit.DAYS =>
-            p.withDays(Math.toIntExact(amount.get(unit)))
+            result = result.withDays(Math.toIntExact(amount.get(unit)))
 
           case _ =>
             throw new DateTimeException(s"Unit not allowed: $unit")
         }
       }
+      result
   }
 
   def between(start: LocalDate, end: LocalDate): Period = start.until(end)

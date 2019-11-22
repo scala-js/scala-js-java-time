@@ -1,15 +1,14 @@
 package java.time.chrono
 
-import scala.collection.JavaConverters._
-
 import java.time.temporal.{Temporal, TemporalAmount}
+import java.time.temporal.TemporalUnit
 
 trait ChronoPeriod extends TemporalAmount {
   def getChronology(): Chronology
 
-  def isZero(): Boolean = getUnits.asScala.forall(get(_) == 0)
+  def isZero(): Boolean = forallUnits(get(_) == 0)
 
-  def isNegative(): Boolean = getUnits.asScala.exists(get(_) < 0)
+  def isNegative(): Boolean = !forallUnits(get(_) >= 0)
 
   def plus(amount: TemporalAmount): ChronoPeriod
 
@@ -24,6 +23,17 @@ trait ChronoPeriod extends TemporalAmount {
   def addTo(temporal: Temporal): Temporal
 
   def subtractFrom(temporal: Temporal): Temporal
+
+  private def forallUnits(f: TemporalUnit => Boolean): Boolean = {
+    // scalastyle:off return
+    val iter = getUnits().iterator()
+    while (iter.hasNext()) {
+      if (!f(iter.next()))
+        return false
+    }
+    true
+    // scalastyle:on return
+  }
 }
 
 object ChronoPeriod {

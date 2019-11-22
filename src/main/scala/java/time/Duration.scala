@@ -1,8 +1,8 @@
 package java.time
 
-import scala.collection.JavaConverters._
-
 import java.time.temporal._
+
+import java.{util => ju}
 
 final class Duration private (seconds: Long, nanos: Int)
     extends TemporalAmount with Comparable[Duration]
@@ -29,7 +29,7 @@ final class Duration private (seconds: Long, nanos: Int)
   }
 
   def getUnits(): java.util.List[TemporalUnit] =
-    Seq[TemporalUnit](SECONDS, NANOS).asJava
+    ju.Collections.unmodifiableList(ju.Arrays.asList(SECONDS, NANOS))
 
   def isZero(): Boolean = seconds == 0 && nanos == 0
 
@@ -274,9 +274,13 @@ object Duration {
   }
 
   def from(amount: TemporalAmount): Duration = {
-    amount.getUnits.asScala.foldLeft(ZERO) { (d, u) =>
-      d.plus(amount.get(u), u)
+    var result = ZERO
+    val iter = amount.getUnits().iterator()
+    while (iter.hasNext()) {
+      val unit = iter.next()
+      result = result.plus(amount.get(unit), unit)
     }
+    result
   }
 
   // Not implemented
