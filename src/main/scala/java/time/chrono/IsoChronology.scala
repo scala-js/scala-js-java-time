@@ -1,7 +1,5 @@
 package java.time.chrono
 
-import scala.collection.JavaConverters._
-
 import java.time.{Period, LocalDate}
 import java.time.temporal.{ValueRange, ChronoField, TemporalAccessor}
 import java.{util => ju}
@@ -53,7 +51,8 @@ final class IsoChronology private () extends AbstractChronology with Serializabl
 
   def eraOf(eraValue: Int): IsoEra = IsoEra.of(eraValue)
 
-  def eras(): ju.List[Era] = Seq[Era](IsoEra.BCE, IsoEra.CE).asJava
+  def eras(): ju.List[Era] =
+    ju.Collections.unmodifiableList(ju.Arrays.asList(IsoEra.BCE, IsoEra.CE))
 
   // Not implemented
   // def resolveDate(fieldValues: ju.Map[TemporalField, Long],

@@ -2,8 +2,6 @@ package org.scalajs.testsuite.javalib.time
 
 import java.time.temporal.{UnsupportedTemporalTypeException, ChronoUnit, TemporalAmount}
 
-import scala.collection.JavaConverters._
-
 import org.junit.Test
 import org.junit.Assert._
 import org.scalajs.testsuite.utils.AssertThrows._
@@ -25,6 +23,6 @@ abstract class TemporalAmountTest {
 
   @Test def test_getUnits(): Unit = {
     for (amount <- samples)
-      assertEquals(units.toIterable, amount.getUnits.asScala)
+      assertArrayEquals(units.toArray[AnyRef], amount.getUnits.toArray())
   }
 }

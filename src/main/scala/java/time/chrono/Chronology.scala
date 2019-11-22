@@ -1,6 +1,5 @@
 package java.time.chrono
 
-import scala.collection.JavaConverters._
 import scala.scalajs.js
 
 import java.time.{Period, DateTimeException}
@@ -70,11 +69,17 @@ object Chronology {
   // def ofLocale(locale: ju.Locale): Chronology
 
   def of(id: String): Chronology = {
-    getAvailableChronologies().asScala.find(_.getId == id).getOrElse {
-      throw new DateTimeException(s"Unknown chronology: $id")
+    // scalastyle:off return
+    val iter = getAvailableChronologies().iterator()
+    while (iter.hasNext()) {
+      val chronology = iter.next()
+      if (chronology.getId() == id)
+        return chronology
     }
+    throw new DateTimeException(s"Unknown chronology: $id")
+    // scalastyle:on return
   }
 
   def getAvailableChronologies(): ju.Set[Chronology] =
-    Set[Chronology](IsoChronology.INSTANCE).asJava
+    ju.Collections.singleton(IsoChronology.INSTANCE)
 }
