@@ -2,8 +2,7 @@
 
 [![Build Status](https://travis-ci.org/scala-js/scala-js-java-time.svg?branch=master)](https://travis-ci.org/scala-js/scala-js-java-time)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg)](https://www.scala-js.org/)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M8.svg)](https://www.scala-js.org)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-RC1.svg)](https://www.scala-js.org)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0.svg)](https://www.scala-js.org)
 
 `scalajs-java-time` is a BSD-licensed reimplementation of the `java.time` API
 of JDK8 for Scala.js. It enables this API in Scala.js projects.
