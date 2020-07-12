@@ -14,6 +14,16 @@ val commonSettings: Seq[Setting[_]] = Seq(
   organization := "org.scala-js",
   scalacOptions ++= Seq("-deprecation", "-feature", "-Xfatal-warnings"),
 
+  scalacOptions ++= {
+    if (isSnapshot.value)
+      Seq.empty
+    else {
+      val a = baseDirectory.value.toURI
+      val g = "https://raw.githubusercontent.com/scala-js/scala-js-java-time"
+      Seq(s"-P:scalajs:mapSourceURI:$a->$g/v${version.value}/")
+    }
+  },
+
   homepage := Some(url("http://scala-js.org/")),
   licenses += ("BSD New",
       url("https://github.com/scala-js/scala-js-java-time/blob/master/LICENSE")),
