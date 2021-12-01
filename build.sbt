@@ -16,7 +16,7 @@ val commonSettings: Seq[Setting[_]] = Seq(
 
   homepage := Some(url("http://scala-js.org/")),
   licenses += ("BSD New",
-      url("https://github.com/scala-js/scala-js-java-time/blob/master/LICENSE")),
+      url("https://github.com/scala-js/scala-js-java-time/blob/main/LICENSE")),
   scmInfo := Some(ScmInfo(
       url("https://github.com/scala-js/scala-js-java-time"),
       "scm:git:git@github.com:scala-js/scala-js-java-time.git",
