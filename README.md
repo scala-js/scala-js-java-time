@@ -1,6 +1,6 @@
 # scalajs-java-time (deprecated)
 
-[![Build Status](https://travis-ci.org/scala-js/scala-js-java-time.svg?branch=master)](https://travis-ci.org/scala-js/scala-js-java-time)
+[![CI](https://github.com/scala-js/scala-js-java-time/actions/workflows/ci.yml/badge.svg)](https://github.com/scala-js/scala-js-java-time/actions/workflows/ci.yml)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg)](https://www.scala-js.org/)
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0.svg)](https://www.scala-js.org)
 
